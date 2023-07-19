@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New COMP</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" >
+
+    <!-- Map -->
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        function exportToExcel(tableID, filename = ''){
+            var downloadurl;
+            var dataFileType = 'application/vnd.ms-excel';
+            var tableSelect = document.getElementById(tableID);
+            var tableHTMLData = tableSelect.outerHTML.replace(/ /g, '%20');
+            
+            // Specify file name
+            filename = filename?filename+'.xls':'export_excel_data.xls';
+            
+            // Create download link element
+            downloadurl = document.createElement("a");
+            
+            document.body.appendChild(downloadurl);
+            
+            if(navigator.msSaveOrOpenBlob){
+                var blob = new Blob(['\ufeff', tableHTMLData], {
+                    type: dataFileType
+                });
+                navigator.msSaveOrOpenBlob( blob, filename);
+            }else{
+                // Create a link to the file
+                downloadurl.href = 'data:' + dataFileType + ', ' + tableHTMLData;
+            
+                // Setting the file name
+                downloadurl.download = filename;
+                
+                //triggering the function
+                downloadurl.click();
+            }
+        }
+    </script>
+    <!-- <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico"> -->
+
+<style>
+html, body, #container, #map {
+    padding: 0;
+    margin: 0;
+}
+html, body, #map, #container {
+    height: 400px;
+}
+
+#myTable {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#myTable td, #myTable th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+h1{
+margin: 0;
+font-weight: 500;
+color: #00d9ff;
+}
+#myTable tr:nth-child(even){background-color: #f2f2f2;}
+
+#myTable tr:hover {background-color: #ddd;}
+
+#myTable th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #14bfd6;
+  color: white;
+}
+</style>
+
+</head>
+<body>
+    <div>
+        <h1>User form</h1>
+        <h3>รายละเอียดคู่แข่ง</h3>
+        <form class="w3-container w3-card">
+            <label for="StoreID">StoreID</label>
+            <input  type="text" id="StoreID" required>
+            <label for="BranchName">BranchName</label>
+            <input  type="text" id="BranchName" required>
+            <label for="format">format</label>
+            <select name="format" id="format" required>
+                <option hidden disabled selected value>Select</option> 
+                <option value="HP">Hypermarket</option>
+                <option value="DP">Department Store</option>
+                <option value="SP">Supermarket</option>
+                <option value="MNS">Convenience Store</option>
+            </select>
+            <label for="Fascia" >Fascia</label>
+            <select name="Fascia" id="Fascia"  required>
+                <option hidden disabled selected value>Select</option> 
+                <option value="1">7 ELEVEN</option>
+                <option value="2">BEAUTY CENTER</option>
+                <option value="3">BETAGRO SHOP</option>
+                <option value="4">BIG C</option>
+                <option value="5">BIG C DEPOT</option>
+                <option value="6">BIG C EXTRA</option>
+                <option value="7">BIG C FOOD PLACE</option>
+                <option value="8">BIG C FOOD SERVICES</option>
+                <option value="9">BIG C MARKET</option>
+                <option value="10">BIG CAT</option>
+                <option value="11">CAT ONE</option>
+                <option value="12">CENTRAL</option>
+                <option value="13">CHAISAENG</option>
+                <option value="14">CHAROEN PHAN</option>
+                <option value="15">CHIANGMAI DIRECT</option>
+                <option value="16">CJ MORE</option>
+                <option value="17">CJ SUPERMARKET</option>
+                <option value="18">CPFM</option>
+                <option value="19">DARA</option>
+                <option value="20">DONKI</option>
+                <option value="21">EKAPAB</option>
+                <option value="22">FAMILY MART</option>
+                <option value="23">FOODLAND</option>
+                <option value="24">Fresh@Makro</option>
+                <option value="25">GET IT</option>
+                <option value="26">GLOBAL HOUSE</option>
+                <option value="27">GO!</option>
+                <option value="28">GOURMET MARKET</option>
+                <option value="29">GOURMET THAI</option>
+                <option value="30">HOKKEE EXPRESS</option>
+                <option value="31">HOKKEE MEGA STORE</option>
+                <option value="32">JIFFY</option>
+                <option value="33">KIATSIN NEXT</option>
+                <option value="34">LAWSON 108</option>
+                <option value="35">LOCAL</option>
+                <option value="36">LOTUS'S</option>
+                <option value="37">LOTUS'S GO FRESH</option>
+                <option value="38">MAKRO</option>
+                <option value="39">MAKRO FOOD SERVICE</option>
+                <option value="40">MARKFOUR</option>
+                <option value="41">MAX MART</option>
+                <option value="42">MAXVALU</option>
+                <option value="43">MAXVALU TANJAI</option>
+                <option value="44">MILK&MOS</option>
+                <option value="45">MINI BIG C</option>
+                <option value="46">NINE COSMETIC</option>
+                <option value="47">ODIAN STORE</option>
+                <option value="48">P MART</option>
+                <option value="49">PHASI MINIMART</option>
+                <option value="50">PREM PRI STORE</option>
+                <option value="51">RIMPING (LOCAL)</option>
+                <option value="52">ROBINSON</option>
+                <option value="53">SAVE LAND</option>
+                <option value="54">SPAR</option>
+                <option value="55">SUPER CHAI WAN</option>
+                <option value="56">SUPER CHEAP</option>
+                <option value="57">SUPER SAVE</option>
+                <option value="58">SUPERKOOM</option>
+                <option value="59">SURIN LOCAL</option>
+                <option value="60">THAI GEMS MART</option>
+                <option value="61">THAI MART</option>
+                <option value="62">THAI WATSADU</option>
+                <option value="63">THAI WATSADU X BNB HOME</option>
+                <option value="64">THAIFOODS FRESH MARKET</option>
+                <option value="65">THANA PIRIYA</option>
+                <option value="66">THAWEE CHAROEN</option>
+                <option value="67">THE MALL</option>
+                <option value="68">TOP MART</option>
+                <option value="69">TOPS</option>
+                <option value="70">TOPS CLUB</option>
+                <option value="71">TOPS DAILY</option>
+                <option value="72">TOPS FINE FOOD</option>
+                <option value="73">TOPS FOODHALL</option>
+                <option value="74">TOPS MARKET</option>
+                <option value="75">TOPS SUPER</option>
+                <option value="76">TOPS SUPERSTORE</option>
+                <option value="77">TSURUHA</option>
+                <option value="78">U FOOD HOUSE</option>
+                <option value="79">UFM FUJI</option>
+                <option value="80">V SHOP</option>
+                <option value="81">VILLA MARKET</option>
+                <option value="82">VOGUE</option>
+                <option value="83">WAN</option>
+                <option value="84">WATSONS</option>
+                <option value="85">WISHCO</option>
+                <option value="86">WISHCO EXPRESS</option>
+            </select>
+            <label for="latitude">Latitude:</label>
+            <input id="latitude" type="text" required/>
+            
+            <label for="longitude">Longitude:</label>
+            <input id="longitude" type="text" required/>
+            <br>
+            <label for="date">OpeningDate</label>
+            <input type="date" id="OpeningDate" name="OpeningDate" required>
+
+            <label for="NetArea">NetArea</label>
+            <input type="number" id="NetArea" min="0" required>
+
+            <label for="Car">TotalCarSpaces</label>
+            <input type="number"  name="car" id="TotalCarSpaces" min="0" required >
+
+            <label for="bike">MotorCycleSpaces</label>
+            <input type="number"  name="bike" id="MotorCycleSpaces" min="0" required>
+
+            <label for="TradingStatus">TradingStatus</label>
+            <select name="TradingStatus" id="TradingStatus" required >
+                <option hidden disabled selected value>Select</option> 
+                <option value="Trading">Trading</option>
+                <option value="Closed">Closed</option>
+                <option value="Estimated">Estimated</option>
+                <option value="Rumor">Rumor</option>
+                <option value="Under Construction">Under Construction</option>
+            </select>
+
+            <label for="COMPStatus" style="background-color: yellow;">COMPStatus</label>
+            <select name="COMPStatus" id="COMPStatus" required >
+                <option hidden disabled selected value>Select</option> 
+                <option value="NewCOMP" >NewCOMP</option>
+                <option value="Edit">Edit</option>
+                <option value="Delete">Delete</option>
+            </select>
+            
+            <label for="Comment">Comment</label>
+
+            <input type="textarea" id="Comment" >
+            <br></br>
+
+            <button type="button" id="save" class="btn btn-success" >save</button>
+            <input type="reset" name="" id="" value="reset"class="btn btn-danger">
+            <button onclick="exportToExcel('myTable', 'user-data')" class="btn btn-warning">Upload</button>
+
+            <script language="JScript">
+                function move() {
+                  var object = new ActiveXObject("Scripting.FileSystemObject");
+                  var file = object.GetFile("C:\\Users\\TH40110414\\Downloads\\user-data(33).xls");
+                  file.Move("R:\\Site Research\\Pong\\Export");
+                  console.log("File is moved successfully");
+                }
+              </script>
+                <button onClick="move()">Move File txt</button>
+
+        </form>
+          <div id="map"></div>
+        <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+
+        <script>
+            
+            var GoogleHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+            });
+
+            var OpenStreetMap = L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            });
+       
+            //remember last position
+            var rememberLat = document.getElementById('latitude').value;
+            var rememberLong = document.getElementById('longitude').value;
+            if( !rememberLat || !rememberLong ) { rememberLat = 13.736717; rememberLong = 100.523186;}
+            
+            
+            var map = new L.Map('map', {
+            'center': [rememberLat, rememberLong],
+            'zoom':10,
+            'layers': [OpenStreetMap]
+            });
+            
+            var marker = L.marker([rememberLat, rememberLong],{
+            draggable: true
+            }).addTo(map);
+            
+
+            marker.on('dragend', function (e) {
+                updateLatLng(marker.getLatLng().lat, marker.getLatLng().lng);
+            });
+
+            map.on('click', function (e) {
+                marker.setLatLng(e.latlng);
+                updateLatLng(marker.getLatLng().lat, marker.getLatLng().lng);
+            });
+            
+            function updateLatLng(lat,lng,reverse) {
+                if(reverse) {
+                    marker.setLatLng([lat,lng]);
+                    map.panTo([lat,lng]);
+                } else {
+                document.getElementById('latitude').value = marker.getLatLng().lat;
+                document.getElementById('longitude').value = marker.getLatLng().lng;
+                map.panTo([lat,lng]);
+                }
+            }
+            // GroupLayer//
+            var baseLayers = {
+                "Satellite": GoogleHybrid,
+                "StreetMap": OpenStreetMap,
+                };
+            var overlays = {
+                "Marker": marker,
+                };
+            L.control.layers(baseLayers, overlays).addTo(map);
+
+            
+
+        </script>
+    </div>
+</script>
+
+</body>
+<footer>
+<table class="w3-table-all" id="myTable">
+            <thead>
+                <tr class="w3-pale-blue">
+                <th nowrap>StoreID </th>      
+                <th nowrap>BranchName</th>      
+                <th nowrap>format</th>
+                <th nowrap>Fascia</th>
+                <th nowrap>Latitude</th>
+                <th nowrap>Longitude</th>
+                <th nowrap>OpeningDate</th>
+                <th nowrap>NetArea</th>
+                <th nowrap>TotalCarSpaces</th>
+                <th nowrap>MotorCycleSpaces</th>
+                <th nowrap>TradingStatus</th>
+                <th nowrap>COMPStatus</th>
+                <th nowrap>Comment</th>
+                </tr>
+            </thead>
+            <tbody >
+            </tbody>
+        </table>
+<script type="text/javascript">
+            $('#save').on('click', function() {
+            var StoreID=$('#StoreID').val();
+            var BranchName=$('#BranchName').val();
+            var format=$('#format').val();
+            var Fascia=$('#Fascia').val();
+            var latitude=$('#latitude').val();
+            var longitude=$('#longitude').val();
+            var OpeningDate=$('#OpeningDate').val();
+            var NetArea=$('#NetArea').val();
+            var TotalCarSpaces=$('#TotalCarSpaces').val();
+            var MotorCycleSpaces=$('#MotorCycleSpaces').val();
+            var TradingStatus=$('#TradingStatus').val();
+            var COMPStatus=$('#COMPStatus').val();
+            var Comment=$('#Comment').val();
+            // var count = $('#myTable tr').length;
+    
+            if(StoreID!="" && BranchName !="" && format!=""&& Fascia!=""&& latitude!=""&& longitude!=""&& OpeningDate!=""&& NetArea!=""&& TotalCarSpaces!=""&& MotorCycleSpaces!=""&& TradingStatus!=""&& COMPStatus!=""){
+            $('#myTable tbody').append('<tr class="child"><td>'+StoreID+'</td><td>'+BranchName+'</td><td>'+format+'</td><td>'+Fascia+'</td><td>'+latitude+'</td><td>'+longitude+'</td><td>'+OpeningDate+'</td><td>'+NetArea+'</td><td>'+TotalCarSpaces+'</td><td>'+MotorCycleSpaces+'</td><td>'+TradingStatus+'</td><td>'+COMPStatus+'</td><td>'+Comment+'</td><td><a href="javascript:void(0);" class="remCF1 btn btn-small btn-danger">Remove</a></td></tr>');
+            }
+            });
+            $(document).on('click','.remCF1',function(){
+            $(this).parent().parent().remove();
+            $('#myTable tbody tr').each(function(i){            
+             $($(this).find('td')[0]).html(i+1);          
+            });
+            });
+</script>
+</footer>
+</html>
